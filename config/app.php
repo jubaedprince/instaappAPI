@@ -145,6 +145,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        //third party providers
+        Vinkla\Instagram\InstagramServiceProvider::class
+
     ],
 
     /*
@@ -193,6 +196,10 @@ return [
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
+
+        //third party aliases
+
+        'Instagram' => Vinkla\Instagram\Facades\Instagram::class
 
     ],
 
