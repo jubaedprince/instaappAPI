@@ -10,7 +10,7 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-
+use App\User;
 Route::get('/', function () {
     return response()->json([
         'success' => true,
@@ -18,23 +18,9 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/redirect/twitter', function(){
-// Get code parameter.
-    $code = Request::get('code');
-// Request the access token.
-    $data = Instagram::getOAuthToken($code);
 
-// Set the access token with $data object.
-    Instagram::setAccessToken($data);
-
-// We're done here - how easy was that, it just works!
-    dd( Instagram::getUserLikes());
-// This example is simple, and there are far more methods available.
-});
 
 Route::get('/test', function(){
-    $loginUrl = Instagram::getLoginUrl();
-    return view('instagram')->with('loginUrl', $loginUrl);
 
 });
 
@@ -44,6 +30,19 @@ Route::group(['prefix' => 'api'], function () { //TODO Add auth middleware later
             'success' => true,
             'message' => 'welcome to the greatest api on earth made by boss JP'
         ]);
+    });
+
+    //Register a user.
+    Route::resource('user', 'UserController', ['only'=>['store']]);
+
+    //All requests will need token in the following group.
+    Route::group(['middleware' => 'loggedInUsersOnly'], function(){
+        Route::get('/restricted', function(){
+            return "You are in the restricted route";
+        });
+
+        //Save a media for promotion.
+        Route::resource('media', 'MediaController', ['only'=>['store', 'index']]);
     });
 
 });
