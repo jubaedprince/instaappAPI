@@ -36,4 +36,9 @@ class User extends Model{
         return $this->hasMany('App\Media');
     }
 
+    public function likes()
+    {
+        return $this->hasMany('App\Like');
+    }
+
 }

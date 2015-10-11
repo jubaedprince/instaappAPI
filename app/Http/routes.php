@@ -19,10 +19,10 @@ Route::get('/', function () {
 });
 
 
-
-Route::get('/test', function(){
-
-});
+use App\Media;
+//Route::get('/test', function(){
+//    return Media::all();
+//});
 
 Route::group(['prefix' => 'api'], function () { //TODO Add auth middleware later
     Route::get('/', function ()    {
@@ -43,6 +43,12 @@ Route::group(['prefix' => 'api'], function () { //TODO Add auth middleware later
 
         //Save a media for promotion.
         Route::resource('media', 'MediaController', ['only'=>['store', 'index']]);
+
+        Route::resource('like', 'LikeController', ['only'=>['store', 'index']]);
+    });
+
+    Route::get('/test', function(){
+        return Media::all();
     });
 
 });

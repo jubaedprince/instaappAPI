@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Validator;
+
 use App\Media;
 use App\User;
-use DB;
+use App\Like;
+use Mockery\CountValidator\Exception;
 
-class MediaController extends Controller
+class LikeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +20,7 @@ class MediaController extends Controller
      */
     public function index()
     {
-        return Media::filterPublishable(Media::all())->take(100); //returns Media collection
+        //
     }
 
 
@@ -31,26 +32,22 @@ class MediaController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
-            'url' => 'unique:medias|required|url'
-        ];
+        //Get the Media from given URL
+        $media = Media::where('url', $request->url)->first();
 
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-
-            return response()->json([
-                'success'   =>  false,
-                'message'   => "Failed",
-                'error'     => $validator->errors()->all()
-            ]);
+        if(!$media){
+            return "No such media in our DB.";
         }
 
-        return response()->json([
-            'success'   =>  true,
-            'message'   => "Success",
-            'user'     => $this->createMedia($request->all())
+        if (!$media->publishable){
+            return "You cannot like this media.";
+        }
+
+        return Like::create([
+            'user_id' => User::getCurrentUserId(),
+            'media_id' => $media->id
         ]);
+
     }
 
     /**
@@ -86,13 +83,5 @@ class MediaController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    protected function createMedia(array $data){
-        return Media::create([
-            'url' => $data['url'],
-            'user_id' => User::getCurrentUserId(),
-            'promoting' => true
-        ]);
     }
 }

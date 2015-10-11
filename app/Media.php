@@ -28,11 +28,17 @@ class Media extends Model
      *
      * @var array
      */
-    protected $hidden = ['owners_credit', 'created_at', 'updated_at', 'promoting', 'publishable'];
+//    protected $hidden = ['owners_credit', 'created_at', 'updated_at', 'promoting', 'publishable'];
 
     public function user()
     {
         return $this->belongsTo('App\User');
+    }
+
+
+    public function likes()
+    {
+        return $this->hasMany('App\Like');
     }
 
 
@@ -42,12 +48,35 @@ class Media extends Model
     }
 
     public function getPublishableAttribute(){
-        if($this->getOwnersCreditAttribute()){
-            return true; //owner has credit, so publishable
+        if($this->promoting){ //checks if the media is being promoted
+            if($this->user_id != User::getCurrentUserId()){ //checks if owner and liker are same
+                if($this->owners_credit>0){
+                    //owner has credit
+
+                    $user_id =  User::getCurrentUserId();
+
+                    //check if media was already liked by current user and return as required.
+
+                    return $this->likable();
+
+                }
+                else{
+                    return false; //owner doesn't have credit, so not publishable
+                }
+            }
+           return false;
         }
-        else{
-            return false; //owner doesn't have credit, so not publishable
-        }
+        return false;
+
+    }
+
+    public function likable(){
+        $user_id =  User::getCurrentUserId();
+
+        //Check if the media was already liked by the user
+        $like = Like::where('media_id', $this->id)->where('user_id', $user_id)->first();
+
+        return !(boolean)$like;
     }
 
     public function scopePromoting($query)
@@ -55,13 +84,6 @@ class Media extends Model
         return $query->where('promoting', 1);
     }
 
-    public function scopePublishable($query)
-    {
-        return DB::table('users')
-            ->join('medias', 'medias.user_id', '=', 'users.id')
-            ->where('medias.promoting', '=', true)
-            ->where('users.credit', '>', '0');
-    }
 
     public static function filterPublishable($collection)
     {
