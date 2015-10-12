@@ -17,7 +17,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::findOrFail(User::getCurrentUserId());
+        return response()->json([
+            'success'   =>  true,
+            'message'   => "Success",
+            'user'      => User::findOrFail(User::getCurrentUserId())
+        ]);
     }
 
 

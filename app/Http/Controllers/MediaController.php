@@ -19,7 +19,12 @@ class MediaController extends Controller
      */
     public function index()
     {
-        return Media::filterPublishable(Media::all())->take(100); //returns Media collection
+        return response()->json([
+            'success'   =>  true,
+            'message'   => "Success",
+            'media'      => Media::filterPublishable(Media::all())->take(100)  //returns Media collection
+        ]);
+
     }
 
 

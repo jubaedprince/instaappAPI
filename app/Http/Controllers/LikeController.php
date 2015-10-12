@@ -36,16 +36,23 @@ class LikeController extends Controller
         $media = Media::where('url', $request->url)->first();
 
         if(!$media){
-            return "No such media in our DB.";
+            return response()->json([
+                'success'   =>  false,
+                'message'   => "No such media in our DB"
+            ]);
         }
 
         if (!$media->publishable){
-            return "You cannot like this media.";
+            return response()->json([
+                'success'   =>  false,
+                'message'   => "You cannot like this media"
+            ]);
         }
 
-        return Like::create([
-            'user_id' => User::getCurrentUserId(),
-            'media_id' => $media->id
+        return response()->json([
+            'success'   =>  true,
+            'message'   => "Successfully liked",
+            'like'      => Like::create(['user_id' => User::getCurrentUserId(), 'media_id' => $media->id])
         ]);
 
     }
