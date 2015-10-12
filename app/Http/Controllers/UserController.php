@@ -17,7 +17,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return "Show all users.";
+        return User::findOrFail(User::getCurrentUserId());
     }
 
 

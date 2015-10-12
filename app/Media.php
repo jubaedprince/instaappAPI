@@ -28,7 +28,7 @@ class Media extends Model
      *
      * @var array
      */
-//    protected $hidden = ['owners_credit', 'created_at', 'updated_at', 'promoting', 'publishable'];
+    protected $hidden = ['owners_credit', 'created_at', 'updated_at', 'promoting', 'publishable'];
 
     public function user()
     {
