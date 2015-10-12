@@ -2,19 +2,9 @@
 
 namespace App;
 
-use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-
-class User extends Model implements AuthenticatableContract,
-                                    AuthorizableContract,
-                                    CanResetPasswordContract
-{
-    use Authenticatable, Authorizable, CanResetPassword;
+use Request;
+class User extends Model{
 
     /**
      * The database table used by the model.
@@ -28,12 +18,27 @@ class User extends Model implements AuthenticatableContract,
      *
      * @var array
      */
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['username', 'credit', 'profile_url', 'promoting'];
 
     /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array
      */
-    protected $hidden = ['password', 'remember_token'];
+    protected $hidden = [''];
+
+    public static function getCurrentUserId(){
+        return User::where('username', '=', Request::get('username'))->first()->id;
+    }
+
+    public function medias()
+    {
+        return $this->hasMany('App\Media');
+    }
+
+    public function likes()
+    {
+        return $this->hasMany('App\Like');
+    }
+
 }

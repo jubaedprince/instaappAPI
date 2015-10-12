@@ -40,7 +40,7 @@ return [
         'main' => [
             'client_id' => env('INSTAGRAM_CLIENT_ID', 'your client id'),
             'client_secret' => env('INSTAGRAM_CLIENT_SECRET', 'your client secret'),
-            'callback_url' => 'http://istaapp.dev/redirect/twitter/',
+            'callback_url' => 'http://instaapp.dev/api/redirect/instagram/',
         ],
 
         'alternative' => [
