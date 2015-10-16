@@ -34,8 +34,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'username' => 'unique:users|required|max:30',
-            'profile_url' =>'url|unique:users|required'
+            'username' => 'unique:users|required|max:30'
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -96,7 +95,6 @@ class UserController extends Controller
     {
         return User::create([
             'username' => $data['username'],
-            'profile_url' => $data['profile_url'],
             'credit' => 0,
             'followers_left' => 0
         ]);
