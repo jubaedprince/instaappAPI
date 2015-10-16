@@ -9,6 +9,7 @@ use Validator;
 use App\Media;
 use App\User;
 use DB;
+use App\Package;
 
 class MediaController extends Controller
 {
@@ -19,21 +20,29 @@ class MediaController extends Controller
      */
     public function index(Request $request)
     {
-        if($request->get('query') == "likable"){
-            return response()->json([
-                'success'   =>  true,
-                'message'   => "Success",
-                'media'      => Media::filterPublishable(Media::all())->take(100)  //returns Media collection
-            ]);
+        $query = $request->get('query');
+
+        switch($query){
+            case 'likable':
+                return response()->json([
+                    'success'   =>  true,
+                    'message'   => "Success",
+                    'media'      => Media::filterPublishable(Media::all())->take(100)
+                ]);
+
+            case 'running':
+                return response()->json([
+                    'success'   =>  true,
+                    'message'   => "Success",
+                    'media'      => Media::where('user_id', User::getCurrentUserId())->where('likes_left', '>', 0)->get()
+                ]);
         }
-        if ($request->get('query') == "running"){
-            return response()->json([
-                'success'   =>  true,
-                'message'   => "Success",
-                'media'      => Media::where('user_id', User::getCurrentUserId())
-                                    ->where('likes_left', '>', 0)->get()//returns running Media collection
-            ]);
-        }
+
+        return response()->json([
+            'success'   =>  false,
+            'message'   => "Failure, please enter a query parameter. eg: likable or running"
+        ]);
+
 
     }
 
@@ -50,7 +59,7 @@ class MediaController extends Controller
         if ($media==null){ //no media with same URL was stored before
             $rules = [
                 'url'               => 'unique:medias|required|url',
-                'likes_required'    => 'integer'
+                'package_id'        => 'exists:packages,id'
             ];
 
             $validator = Validator::make($request->all(), $rules);
@@ -64,14 +73,29 @@ class MediaController extends Controller
                 ]);
             }
 
+            if(Package::find($request->get('package_id'))->isFollowPackage()){
+                return response()->json([ //Checks if the package is for Like
+                    'success'   =>  false,
+                    'message'   => "Not a valid package. Use a Like Package"
+                ]);
+            }
+
             return response()->json([
                 'success'   =>  true,
                 'message'   => "Success",
                 'media'     => $this->createMedia($request->all())
             ]);
         }
+
+        if(User::getCurrentUserId() != $media->user_id){
+            return response()->json([ //If current user is not the owner of the media, he cant add credit
+                'success'   =>  false,
+                'message'   => "You are not the owner, can't add credit."
+            ]);
+        }
         if ($media->likes_left == 0){ //add number of required likes if current like left is 0
-            $media->likes_left = $media->likes_left + $request->likes_required;
+            $added_likes = Package::find($request->get('package_id'))->return;
+            $media->likes_left = $media->likes_left + $added_likes;
             $media->save();
 
             return response()->json([
@@ -129,7 +153,7 @@ class MediaController extends Controller
         return Media::create([
             'url'        => $data['url'],
             'user_id'    => User::getCurrentUserId(),
-            'likes_left' => $data['likes_required']
+            'likes_left' => Package::find($data['package_id'])->return
         ]);
     }
 }
