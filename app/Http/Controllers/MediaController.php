@@ -17,13 +17,23 @@ class MediaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json([
-            'success'   =>  true,
-            'message'   => "Success",
-            'media'      => Media::filterPublishable(Media::all())->take(100)  //returns Media collection
-        ]);
+        if($request->get('query') == "likable"){
+            return response()->json([
+                'success'   =>  true,
+                'message'   => "Success",
+                'media'      => Media::filterPublishable(Media::all())->take(100)  //returns Media collection
+            ]);
+        }
+        if ($request->get('query') == "running"){
+            return response()->json([
+                'success'   =>  true,
+                'message'   => "Success",
+                'media'      => Media::where('user_id', User::getCurrentUserId())
+                                    ->where('likes_left', '>', 0)->get()//returns running Media collection
+            ]);
+        }
 
     }
 

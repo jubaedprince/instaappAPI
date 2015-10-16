@@ -17,7 +17,6 @@ class CreateUsersTable extends Migration
             $table->string('username')->unique();
             $table->integer('credit');
             $table->integer('followers_left');
-            $table->string('profile_url');
             $table->timestamps();
         });
     }
