@@ -35,6 +35,8 @@ Route::group(['prefix' => 'api'], function () { //TODO Add auth middleware later
     //Register a user.
     Route::resource('user', 'UserController', ['only'=>['store']]);
 
+    Route::resource('package', 'PackageController', ['only'=>['index']]);
+
     //All requests will need token in the following group.
     Route::group(['middleware' => 'loggedInUsersOnly'], function(){
         Route::get('/restricted', function(){

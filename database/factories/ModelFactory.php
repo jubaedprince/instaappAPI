@@ -17,4 +17,15 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'credit' => $faker->numberBetween(0,50),
         'followers_left' => $faker->numberBetween(0,100)
     ];
+
+});
+
+
+$factory->define(App\Media::class, function (Faker\Generator $faker) {
+    return [
+        'url' => $faker->url,
+        'user_id' => $faker->numberBetween(1,10),
+        'likes_left' => $faker->numberBetween(0,100)
+    ];
+
 });

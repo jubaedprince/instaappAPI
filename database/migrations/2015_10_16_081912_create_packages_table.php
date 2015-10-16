@@ -14,8 +14,10 @@ class CreatePackagesTable extends Migration
     {
         Schema::create('packages', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('credits')->unsigned();
-            $table->integer('likes')->unsigned();
+            $table->string('name');
+            $table->integer('cost');
+            $table->integer('type'); //1 = Follow ; 2 = Like
+            $table->integer('return'); //amount of like or follow
             $table->timestamps();
         });
     }

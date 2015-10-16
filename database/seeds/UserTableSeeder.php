@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-
+use App\User;
 class UserTableSeeder extends Seeder
 {
     /**
@@ -16,6 +16,8 @@ class UserTableSeeder extends Seeder
 //        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
 
         factory(App\User::class, 10)->create();
+
+        User::create(['username' => 'jubaedprince', 'credit' => 100, 'followers_left' => 10]);
 
 //        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }
