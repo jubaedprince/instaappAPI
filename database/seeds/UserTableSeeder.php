@@ -15,7 +15,7 @@ class UserTableSeeder extends Seeder
 
 //        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
 
-        factory(App\User::class, 50)->create();
+        factory(App\User::class, 10)->create();
 
 //        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }

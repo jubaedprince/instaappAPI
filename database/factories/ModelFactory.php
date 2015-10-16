@@ -16,6 +16,6 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
         'username' => $faker->userName,
         'credit' => $faker->numberBetween(0,50),
         'profile_url' => $faker->url,
-        'promoting' => $faker->boolean(60),
+        'followers_left' => $faker->numberBetween(0,100),
     ];
 });

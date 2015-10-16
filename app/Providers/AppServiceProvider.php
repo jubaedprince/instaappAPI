@@ -17,12 +17,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Like::creating(function ($attribute) {
-            // -1 credit for owner of media
-            $user = User::findOrFail(Media::findOrFail($attribute->media_id)->user_id);
+            // -1 like_left for media
+            $media = Media::findOrFail($attribute->media_id);
 
-            $user->credit = $user->credit - 1;
+            $media->likes_left = $media->likes_left - 1;
 
-            $user->save();
+            $media->save();
 
             // +1 credit for liker of media
             $user = User::findOrFail($attribute->user_id);

@@ -19,16 +19,16 @@ class Media extends Model
      *
      * @var array
      */
-    protected $fillable = ['url', 'user_id', 'promoting'];
+    protected $fillable = ['url', 'user_id', 'likes_left'];
 
-    protected $appends = ['owners_credit', 'publishable'];
+    protected $appends = ['publishable'];
 
     /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array
      */
-    protected $hidden = ['owners_credit', 'created_at', 'updated_at', 'promoting', 'publishable'];
+    protected $hidden = ['created_at', 'updated_at', 'publishable'];
 
     public function user()
     {
@@ -41,32 +41,24 @@ class Media extends Model
         return $this->hasMany('App\Like');
     }
 
-
-    public function getOwnersCreditAttribute()
-    {
-        return $this->user()->first()->credit;
-    }
-
     public function getPublishableAttribute(){
-        if($this->promoting){ //checks if the media is being promoted
-            if($this->user_id != User::getCurrentUserId()){ //checks if owner and liker are same
-                if($this->owners_credit>0){
-                    //owner has credit
+        if($this->likes_left>0){ //checks if the media has any like left
 
-                    $user_id =  User::getCurrentUserId();
+            if($this->user_id != User::getCurrentUserId()) { //checks if owner and liker are same
 
-                    //check if media was already liked by current user and return as required.
+                $user_id = User::getCurrentUserId();
 
-                    return $this->likable();
+                //check if media was already liked by current user and return as required.
 
-                }
-                else{
-                    return false; //owner doesn't have credit, so not publishable
-                }
+                return $this->likable();
             }
-           return false;
+
+            else{
+                return false; //owner doesn't have credit, so not publishable
+            }
         }
         return false;
+
 
     }
 
@@ -78,12 +70,6 @@ class Media extends Model
 
         return !(boolean)$like;
     }
-
-    public function scopePromoting($query)
-    {
-        return $query->where('promoting', 1);
-    }
-
 
     public static function filterPublishable($collection)
     {
