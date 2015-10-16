@@ -98,7 +98,7 @@ class UserController extends Controller
             'username' => $data['username'],
             'profile_url' => $data['profile_url'],
             'credit' => 0,
-            'promoting' => false
+            'followers_left' => 0
         ]);
     }
 }

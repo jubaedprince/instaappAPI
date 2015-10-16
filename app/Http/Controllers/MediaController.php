@@ -36,26 +36,48 @@ class MediaController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
-            'url' => 'unique:medias|required|url'
-        ];
+        $media = Media::where('url', $request->url)->first();
+        if ($media==null){ //no media with same URL was stored before
+            $rules = [
+                'url'               => 'unique:medias|required|url',
+                'likes_required'    => 'integer'
+            ];
 
-        $validator = Validator::make($request->all(), $rules);
+            $validator = Validator::make($request->all(), $rules);
 
-        if ($validator->fails()) {
+            if ($validator->fails()) {
+
+                return response()->json([
+                    'success'   =>  false,
+                    'message'   => "Failed",
+                    'error'     => $validator->errors()->all()
+                ]);
+            }
 
             return response()->json([
+                'success'   =>  true,
+                'message'   => "Success",
+                'media'     => $this->createMedia($request->all())
+            ]);
+        }
+        if ($media->likes_left == 0){ //add number of required likes if current like left is 0
+            $media->likes_left = $media->likes_left + $request->likes_required;
+            $media->save();
+
+            return response()->json([
+                'success'   =>  true,
+                'message'   => "Successfully added number of required likes",
+                'media'     => $media
+            ]);
+        }
+        else{
+            return response()->json([ //Dont do anything if current like left is not 0
                 'success'   =>  false,
-                'message'   => "Failed",
-                'error'     => $validator->errors()->all()
+                'message'   => "Already under one campaign. Finish current campaign, then add credit."
             ]);
         }
 
-        return response()->json([
-            'success'   =>  true,
-            'message'   => "Success",
-            'user'     => $this->createMedia($request->all())
-        ]);
+
     }
 
     /**
@@ -95,9 +117,9 @@ class MediaController extends Controller
 
     protected function createMedia(array $data){
         return Media::create([
-            'url' => $data['url'],
-            'user_id' => User::getCurrentUserId(),
-            'promoting' => true
+            'url'        => $data['url'],
+            'user_id'    => User::getCurrentUserId(),
+            'likes_left' => $data['likes_required']
         ]);
     }
 }
