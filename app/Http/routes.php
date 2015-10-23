@@ -10,7 +10,7 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-use App\User;
+
 Route::get('/', function () {
     return response()->json([
         'success' => true,
@@ -19,10 +19,11 @@ Route::get('/', function () {
 });
 
 
-use App\Media;
-Route::get('/test', function(){
-    return Media::all();
-});
+//use App\Media;
+//use App\User;
+//Route::get('/test', function(){
+//    return User::all();
+//});
 
 Route::group(['prefix' => 'api'], function () { //TODO Add auth middleware later
     Route::get('/', function ()    {
@@ -39,16 +40,26 @@ Route::group(['prefix' => 'api'], function () { //TODO Add auth middleware later
 
     //All requests will need token in the following group.
     Route::group(['middleware' => 'loggedInUsersOnly'], function(){
-        Route::get('/restricted', function(){
-            return "You are in the restricted route";
-        });
+//        Route::get('/restricted', function(){
+//            return "You are in the restricted route";
+//        });
 
         //Save a media for promotion.
         Route::resource('media', 'MediaController', ['only'=>['store', 'index']]);
 
-        Route::resource('like', 'LikeController', ['only'=>['store', 'index']]);
+        Route::resource('like', 'LikeController', ['only'=>['store']]);
+
+        Route::resource('skip', 'SkipController', ['only'=>['store']]);
+
+        Route::resource('follow', 'FollowController', ['only'=>['store']]);
+
+        Route::post('seek-follower', 'FollowController@seekFollower');
 
         Route::resource('user', 'UserController', ['only'=>['index']]);
+
+        Route::post('add-credit', 'UserController@addCredit');
+
+        Route::post('make-pro', 'UserController@makeProUser');
     });
 
 });

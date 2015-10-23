@@ -94,9 +94,34 @@ class UserController extends Controller
     protected function createUser(array $data)
     {
         return User::create([
-            'username' => $data['username'],
-            'credit' => 0,
-            'followers_left' => 0
+            'username'          => $data['username'],
+            'credit'            => 0,
+            'followers_left'    => 0,
+            'pro_user'          => false
+        ]);
+    }
+
+    public function addCredit(Request $request){
+        $credit = $request->get('credit');
+        $user = User::find(User::getCurrentUserId());
+        $user->credit = $user->credit + $credit;
+        $user->save();
+
+        return response()->json([
+            'success'   =>  true,
+            'message'   => "Successfully added credit",
+            'user'     => $user
+        ]);
+    }
+
+    public function makeProUser(){
+        $user = User::find(User::getCurrentUserId());
+        $user->setProUser(true);
+
+        return response()->json([
+            'success'   =>  true,
+            'message'   => "Successful",
+            'user'     => $user
         ]);
     }
 }

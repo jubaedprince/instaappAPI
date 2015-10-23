@@ -80,11 +80,24 @@ class MediaController extends Controller
                 ]);
             }
 
-            return response()->json([
-                'success'   =>  true,
-                'message'   => "Success",
-                'media'     => $this->createMedia($request->all())
-            ]);
+            $package = Package::find($request->package_id);
+            //decrease credit
+            if (User::find(User::getCurrentUserId())->decreaseCredit($package->cost)){
+                return response()->json([
+                    'success'   =>  true,
+                    'message'   => "Success",
+                    'media'     => $this->createMedia($request->all())
+                ]);
+            }
+
+            else{
+                return response()->json([
+                    'success'   =>  false,
+                    'message'   => "Failed. Not enough credit"
+                ]);
+            }
+
+
         }
 
         if(User::getCurrentUserId() != $media->user_id){
@@ -150,10 +163,12 @@ class MediaController extends Controller
     }
 
     protected function createMedia(array $data){
+        $package = Package::find($data['package_id']);
+
         return Media::create([
             'url'        => $data['url'],
             'user_id'    => User::getCurrentUserId(),
-            'likes_left' => Package::find($data['package_id'])->return
+            'likes_left' => $package->return
         ]);
     }
 }

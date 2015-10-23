@@ -41,7 +41,15 @@ class Media extends Model
         return $this->hasMany('App\Like');
     }
 
+    public function skips()
+    {
+        return $this->hasMany('App\Skip');
+    }
+
     public function getPublishableAttribute(){
+        if ($this->skipped()){
+            return false;
+        }
         if($this->likes_left>0){ //checks if the media has any like left
 
             if($this->user_id != User::getCurrentUserId()) { //checks if owner and liker are same
@@ -60,6 +68,15 @@ class Media extends Model
         return false;
 
 
+    }
+
+    public function skipped(){
+        $user_id =  User::getCurrentUserId();
+
+        //Check if the media was already skipped by the user
+        $skip = Skip::where('media_id', $this->id)->where('user_id', $user_id)->first();
+
+        return (boolean)$skip;
     }
 
     public function likable(){
