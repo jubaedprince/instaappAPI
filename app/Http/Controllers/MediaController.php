@@ -120,7 +120,8 @@ class MediaController extends Controller
         else{
             return response()->json([ //Dont do anything if current like left is not 0
                 'success'   =>  false,
-                'message'   => "Already under one campaign. Finish current campaign, then add credit."
+                'message'   => "Already under one campaign. Finish current campaign, then add credit.",
+                'media'     => $media
             ]);
         }
 
