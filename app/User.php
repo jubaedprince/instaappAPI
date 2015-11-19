@@ -57,7 +57,16 @@ class User extends Model{
         //Check if the user was already followed by the current user
         $follow = Follow::where('follow_id', $this->id)->where('user_id', $user_id)->first();
 
-        return !(boolean)$follow;
+        //check if the user has any show_to
+
+        if ($this->show_to == null){ //if show_to is null, that is can be shown to everybody.
+            return !(boolean)$follow;
+        }else if (User::find(User::getCurrentUserId())->country == $this->show_to){ //if user show to and current user are from same country
+            return !(boolean)$follow;
+        }else{
+            return false;
+        }
+
     }
 
     public static function filterFollowable($collection)

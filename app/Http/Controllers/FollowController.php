@@ -139,6 +139,7 @@ class FollowController extends Controller
         if (User::find(User::getCurrentUserId())->decreaseCredit($package->cost)){
             //Add number of followers left
             $user->followers_left = $package->return;
+            $user->show_to = $request->get('show_to');
             $user->save();
 
             return response()->json([

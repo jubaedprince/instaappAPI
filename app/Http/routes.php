@@ -18,13 +18,6 @@ Route::get('/', function () {
     ]);
 });
 
-
-//use App\Media;
-//use App\User;
-//Route::get('/test', function(){
-//    return User::all();
-//});
-
 Route::group(['prefix' => 'api'], function () { //TODO Add auth middleware later
     Route::get('/', function ()    {
         return response()->json([
@@ -51,10 +44,11 @@ Route::group(['prefix' => 'api'], function () { //TODO Add auth middleware later
 
         Route::resource('skip', 'SkipController', ['only'=>['store']]);
 
-        Route::resource('follow', 'FollowController', ['only'=>['store']]);
+        Route::resource('follow', 'FollowController', ['only'=>['store', 'index']]);
 
         Route::post('seek-follower', 'FollowController@seekFollower');
 
+        //get current user info
         Route::resource('user', 'UserController', ['only'=>['index']]);
 
         Route::post('add-credit', 'UserController@addCredit');
