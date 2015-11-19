@@ -167,9 +167,10 @@ class MediaController extends Controller
         $package = Package::find($data['package_id']);
 
         return Media::create([
-            'url'        => $data['url'],
-            'user_id'    => User::getCurrentUserId(),
-            'likes_left' => $package->return
+            'url'               => $data['url'],
+            'show_to'           => $data['show_to'], //TODO::add validator for this.
+            'user_id'           => User::getCurrentUserId(),
+            'likes_left'        => $package->return
         ]);
     }
 }

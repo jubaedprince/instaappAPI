@@ -17,7 +17,7 @@ class UserTableSeeder extends Seeder
 
         factory(App\User::class, 10)->create();
 
-        User::create(['username' => 'jubaedprince', 'credit' => 100, 'followers_left' => 10]);
+        User::create(['username' => 'jubaedprince', 'country' => 'bd', 'credit' => 100, 'followers_left' => 10]);
 
 //        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
     }

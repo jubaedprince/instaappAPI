@@ -95,6 +95,8 @@ class UserController extends Controller
     {
         return User::create([
             'username'          => $data['username'],
+            'country'           => $data['country'],
+            'show_to'           => $data['show_to'],
             'credit'            => 0,
             'followers_left'    => 0,
             'pro_user'          => false

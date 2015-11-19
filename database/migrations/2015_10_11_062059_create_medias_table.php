@@ -17,6 +17,7 @@ class CreateMediasTable extends Migration
             $table->string('url')->unique();
             $table->integer('user_id')->unsigned();
             $table->integer('likes_left');
+            $table->string('show_to')->nullable();
             $table->timestamps();
         });
     }

@@ -15,9 +15,11 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('username')->unique();
+            $table->string('country');
             $table->integer('credit');
             $table->integer('followers_left');
             $table->boolean('pro_user');
+            $table->string('show_to')->nullable();
             $table->timestamps();
         });
     }

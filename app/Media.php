@@ -19,7 +19,7 @@ class Media extends Model
      *
      * @var array
      */
-    protected $fillable = ['url', 'user_id', 'likes_left'];
+    protected $fillable = ['url', 'user_id', 'likes_left', 'show_to'];
 
     protected $appends = ['publishable'];
 
@@ -50,6 +50,14 @@ class Media extends Model
         if ($this->skipped()){
             return false;
         }
+
+        if ($this->show_to != null){
+            //if show_to is null, that is cannot be shown to everybody.
+            if (User::find(User::getCurrentUserId())->country != $this->show_to){
+                return false;
+            }
+        }
+
         if($this->likes_left>0){ //checks if the media has any like left
 
             if($this->user_id != User::getCurrentUserId()) { //checks if owner and liker are same
